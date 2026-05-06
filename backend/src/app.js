@@ -4,6 +4,7 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import morgan from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -110,10 +111,18 @@ if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
 
 
 app.get('/api/health', (req, res) => {
+  const publicPath = path.join(process.cwd(), 'public');
+  const indexExists = fs.existsSync(path.join(publicPath, 'index.html'));
+  
   res.status(200).json({
     status: 'active',
     message: 'MediSync Clinical Backend is Synchronized',
-    security: 'Z+ Hardened',
+    diagnostics: {
+      indexFile: indexExists ? 'Found' : 'MISSING',
+      publicPath: publicPath,
+      cwd: process.cwd(),
+      nodeEnv: process.env.NODE_ENV
+    },
     timestamp: new Date().toISOString(),
   });
 });
