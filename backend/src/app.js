@@ -145,11 +145,11 @@ app.use('/api/appointments', appointmentRoutes);
 
 
 if (process.env.NODE_ENV === 'production') {
-  const distPath = path.resolve(__dirname, '../dist');
-  app.use(express.static(distPath));
+  const publicPath = path.join(process.cwd(), 'public');
+  app.use(express.static(publicPath));
   
   app.get(/.*/, (req, res) => {
-    res.sendFile(path.resolve(distPath, 'index.html'));
+    res.sendFile(path.resolve(publicPath, 'index.html'));
   });
 } else {
   app.get('/', (req, res) => {
